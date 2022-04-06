@@ -1,6 +1,6 @@
 // 1. Write your functions here
 // learned to change color in console from: https://simplernerd.com/js-console-colors/ & https://en.wikipedia.org/wiki/ANSI_escape_code#3-bit_and_4-bit
-// make a constructor function to make new inventory
+// Constructor function to make new inventory
 function KatzMenuCreator(foodItem, price, inventory) {
   this.sandwich = foodItem,
     this.price = price,
@@ -15,12 +15,12 @@ function KatzMenuCreator(foodItem, price, inventory) {
   }
 }
 
-// Populate Menu
+// Populate Menu using constructors
 const no1 = new KatzMenuCreator("Katz\'s Pastrami Sandwich", 24.95, 5)
 const no2 = new KatzMenuCreator("Katz\'s Corned Beef Sandwich", 23.95, 5)
 const no3 = new KatzMenuCreator("Katz's Reuben Sandwich", 25.95, 5)
 
-
+// Populate Line Array
 function line(lineArr) {
   if (lineArr.length === 0) {
     return console.log("\x1b[93m\x1b[3m%s\x1b[0m", "The line is currently empty.")
@@ -32,6 +32,7 @@ function line(lineArr) {
 }
 
 // Check if person is already in array by using the lastIndexOf
+// Checking for people who may have the same name
 function takeANumber(arr, person) {
   arr.push(person)
   // console.log(arr)
@@ -40,81 +41,59 @@ function takeANumber(arr, person) {
 // making a variable to hold person's name
 let currentPerson = ''
 
-// now serving call
+// Now serving call
 function nowServing(arr) {
   console.log("\x1b[95m\x1b[1m%s\x1b[0m", `Currently serving ${currentPerson = arr.shift()}`)
 }
 
-// when a person decides to leave line
+// When a person decides to leave the line
 function leaveLine(arr) {
   console.log("\x1b[91m\x1b[3m%s\x1b[0m", `${arr.shift()}, has decided to leave`)
 }
 
-// When person makes a new order
-function newOrder(sandwichChoice, amount) {
+// Print Menu Function
+function printMenu() {
   // show customer the menu
   console.log(`\n*****************************************`)
   console.log("\x1b[1m%s\x1b[0m", `What would you like to order?`)
   console.log(`1. ${no1.sandwich}\n2. ${no2.sandwich}\n3. ${no3.sandwich}`)
   console.log(`*****************************************`)
-  console.log("\x1b[95m\x1b[1m%s\x1b[0m", `You have ordered ${amount} No.${sandwichChoice}${(amount === 1 ? '' : 's')}\n`)
-
-  // options OLD without dynamic code
-  if (sandwichChoice === 1) {
-    if (amount > no1.inventory) {
-      console.log("\x1b[101m%s\x1b[0m", `❌ Sorry we can't fulfill your ${no1.sandwich} order!`)
-    } else if (no1.inventory >= amount) {
-      console.log("\x1b[96m%s\x1b[0m", `Here is your order ${currentPerson}, come back again!\n`)
-      no1.reduceInventory(amount)
-    }
-  }
-  else if (sandwichChoice === 2) {
-    if (amount > no2.inventory) {
-      console.log("\x1b[101m%s\x1b[0m", `❌ Sorry we can't fulfill your ${no2.sandwich} order!`)
-    } else if (no2.inventory >= amount) {
-      console.log("\x1b[96m%s\x1b[0m", `Here is your order ${currentPerson}, come back again!\n`)
-      no2.reduceInventory(amount)
-    }
-  }
-  else if (sandwichChoice === 3) {
-    if (amount > no3.inventory) {
-      console.log("\x1b[101m%s\x1b[0m", `❌ Sorry we can't fulfill your ${no3.sandwich} order!`)
-    } else if (no3.inventory >= amount) {
-      console.log("\x1b[96m%s\x1b[0m", `Here is your order ${currentPerson}, come back again!\n`)
-      no3.reduceInventory(amount)
-    }
-  } else {
-    console.log("\x1b[101m%s\x1b[0m", `❌ Sorry we do not have ${no1.sandwich} anymore!`)
-  }
-  // switch (sandwichChoice, amount) {
-  //   case 1:
-  //     if (amount > no1.inventory) {
-  //       console.log(`     Sorry we can't fulfill your entire ${no1.sandwich} order!`)
-  //     } else if (no1.inventory > amount) {
-  //       no1.reduceInventory(amount)
-  //     } else {
-  //       console.log('WE AINT GOT THAT')
-  //     }
-  //     break
-  //   case 2:
-  //     if (no2.inventory === 0) {
-  //       console.log(`     Sorry we do not have ${no2.sandwich} anymore!`)
-  //     } else {
-  //       no2.reduceInventory(amount)
-  //     }
-  //     break
-  //   case 3:
-  //     if (no3.inventory === 0) {
-  //       console.log(`     Sorry we do not have ${no3.sandwich} anymore!`)
-  //     } else {
-  //       no3.reduceInventory(amount)
-  //     }
-  //     break
-  //   default:
-  //     console.log("     Sorry we don't have that/that many in stock!")
-  //     console.log(amount, no1.inventory)
-  // }
 }
+
+// FulfillOrder Function
+function fulfillOrder(sandwichChoice, amount) {
+  if (amount > eval('no' + sandwichChoice + '.inventory')) {
+    console.log("\x1b[101m%s\x1b[0m", `❌ Sorry we can't fulfill your ${no1.sandwich} order!`)
+  } else if (eval('no' + sandwichChoice + '.inventory') >= amount) {
+    // Mention User's order
+    console.log("\x1b[95m\x1b[1m%s\x1b[0m", `${currentPerson}, you have ordered ${amount} ${eval('no' + sandwichChoice + '.sandwich')}${(amount === 1 ? '' : 'es')}`)
+    console.log("\x1b[95m\x1b[1m%s\x1b[0m", `You're total is $${parseFloat(myTotal(sandwichChoice, amount)).toFixed(2)}\n`)
+    console.log("\x1b[96m%s\x1b[0m", `Here is your order ${currentPerson}, come back again!\n`)
+    eval('no' + sandwichChoice + '.reduceInventory(' + amount + ')')
+  }
+}
+// Order Total
+function myTotal(sandwichChoice, amount) {
+  return (eval('no' + sandwichChoice + '.price') * amount) // dynamic variables https://www.geeksforgeeks.org/how-to-use-dynamic-variable-names-in-javascript/
+}
+
+// When person makes an order
+function newOrder(sandwichChoice, amount) {
+  // print Menu
+  printMenu()
+
+  // options
+  if (sandwichChoice === 1) {
+    fulfillOrder(sandwichChoice, amount)
+  } else if (sandwichChoice === 2) {
+    fulfillOrder(sandwichChoice, amount)
+  } else if (sandwichChoice === 3) {
+    fulfillOrder(sandwichChoice, amount)
+  } else {
+    console.log("\x1b[101m%s\x1b[0m", `❌ Sorry we do not have that here!`)
+  }
+}
+
 
 // 2. Example Usage
 
@@ -201,7 +180,7 @@ line(katzDeli) //=> "The line is currently empty"
 
 takeANumber(katzDeli, "Mohammed") //=> Welcome, Mohammed. You are number 1 in line.
 nowServing(katzDeli) //=> "Currently serving Mohammed."
+newOrder(4, 5) // Mohammed makes Order
 newOrder(2, 5) // Mohammed makes Order
-
 console.log("")
 console.log("")
